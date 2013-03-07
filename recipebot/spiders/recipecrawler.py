@@ -14,6 +14,7 @@ from w3lib.html import remove_tags_with_content, remove_tags, remove_comments
 import pdb
 
 from urlparse import urlparse
+from posixpath import basename, dirname
 
 words = re.compile(r'\b[a-z-]+\b', flags=re.IGNORECASE)
 tokenize = lambda text: words.findall(text)
@@ -48,7 +49,9 @@ def ingredient_line(tag):
 class RecipecrawlerSpider(CrawlSpider):
     name = 'recipecrawler'
 
-    start_urls = [ 'http://dmoz.org/' ]
+    f = open("seeds.txt")
+    start_urls = [url.strip() for url in f.readlines()]
+    f.close
 
     # TODO: extract only relevant links
     rules = (
