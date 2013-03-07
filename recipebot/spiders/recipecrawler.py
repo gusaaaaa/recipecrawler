@@ -13,6 +13,8 @@ from w3lib.html import remove_tags_with_content, remove_tags, remove_comments
 
 import pdb
 
+# from bs4 import BeautifulSoup
+
 from urlparse import urlparse
 from posixpath import basename, dirname
 
@@ -72,11 +74,11 @@ class RecipecrawlerSpider(CrawlSpider):
             stats.inc_value('recipe/filtered_out') # probably not recipe page
             return
 
-        parse_object = urlparse(response.url)
-        path = parse_object.netloc + "_" + parse_object.path.replace('/', '_') + ".html"
-
-        with open("tmp/" + path, "wb") as f:
-            f.write(response.body)
+        if settings.OUTPUT_CRAWLED_PAGES:
+            parse_object = urlparse(response.url)
+            path = parse_object.netloc + "_" + parse_object.path.replace('/', '_') + ".html"
+            with open("tmp/" + path, "wb") as f:
+                f.write(response.body)
 
         item['url'] = response.url
 
