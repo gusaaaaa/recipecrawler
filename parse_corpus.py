@@ -91,6 +91,7 @@ if __name__ == '__main__':
                 corpus.append(terms.findall(line.lower()))
 
     # build index
+
     index = []
     for doc in corpus:
         items = {}
@@ -110,3 +111,11 @@ if __name__ == '__main__':
             for items in index:
                 i = i + 1
                 writer.writerows([i, term, value] for (term, value) in items)
+
+    # output seeds.txt
+
+    with open("seeds.txt", "w") as f:
+        for seed in seeds:
+            f.write(seed)
+            f.write("\n")
+
