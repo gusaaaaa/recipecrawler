@@ -15,8 +15,6 @@ from ..classifiers.intersection import IntersectionLengthClassifier
 
 import pdb
 
-# from bs4 import BeautifulSoup
-
 from urlparse import urlparse
 from posixpath import basename, dirname
 
@@ -30,25 +28,6 @@ RECIPE_KEYWORDS = set(['recipe', 'ingredient', 'cook', 'fish', 'beef',
     'vegetarian', 'gluten', 'oister', 'mussel'])
 
 classifier = IntersectionLengthClassifier(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
-
-ingredients_terms = re.compile(r'ingredients', re.IGNORECASE)
-instructions_terms = re.compile(r'(directions|instructions|steps|method|preparation)', re.IGNORECASE)
-
-def is_recipe(toks):
-    has_ingredients = False
-    has_instructions = False
-    for t in toks:
-        if has_ingredients and has_instructions:
-            return True
-        has_ingredients = ingredients_terms.match(t)
-        has_instructions = instructions_terms.match(t)
-    return False
-
-def ingredient_line(tag):
-    if not tag.string is None:
-        if tag.find_parent(text = ingredients_terms):
-            return True
-    return False
 
 class RecipecrawlerSpider(CrawlSpider):
     name = 'recipecrawler'
