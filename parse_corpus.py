@@ -97,7 +97,7 @@ if __name__ == '__main__':
         items = {}
         for term in doc:
             items[term] = tfidf(term, doc, corpus)
-        index.append(sorted(items.items(), key=itemgetter(1), reverse=True))
+        index.append(items)
 
     outputfile = "index.%s"%(options.format,)
 
@@ -110,7 +110,7 @@ if __name__ == '__main__':
             i = 0
             for items in index:
                 i = i + 1
-                writer.writerows([i, term, value] for (term, value) in items)
+                writer.writerows([i, term, value] for (term, value) in items.items())
 
     # output seeds.txt
 
