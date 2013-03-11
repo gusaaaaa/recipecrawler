@@ -11,6 +11,8 @@ from recipebot.items import RecipebotItem
 
 from w3lib.html import remove_tags_with_content, remove_tags, remove_comments
 
+from ..classifiers.intersection import IntersectionLengthClassifier
+
 import pdb
 
 # from bs4 import BeautifulSoup
@@ -18,16 +20,16 @@ import pdb
 from urlparse import urlparse
 from posixpath import basename, dirname
 
-words = re.compile(r'\b[a-z-]+\b', flags=re.IGNORECASE)
-tokenize = lambda text: words.findall(text)
+terms = re.compile(r'\b[a-z-]+\b', flags=re.IGNORECASE)
+tokenize = lambda text: terms.findall(text)
 
 RELEVANCY_TSHOLD = 2
+
 RECIPE_KEYWORDS = set(['recipe', 'ingredient', 'cook', 'fish', 'beef',
     'pork', 'menu', 'food', 'dish', 'diet', 'fruit', 'egg'
     'vegetarian', 'gluten', 'oister', 'mussel'])
 
-# intersection length should be greater than RELEVANCY_TSHOLD
-is_relevant = lambda toks: len(RECIPE_KEYWORDS & set(toks)) > RELEVANCY_TSHOLD
+classifier = IntersectionLengthClassifier(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
 
 ingredients_terms = re.compile(r'ingredients', re.IGNORECASE)
 instructions_terms = re.compile(r'(directions|instructions|steps|method|preparation)', re.IGNORECASE)
@@ -67,10 +69,10 @@ class RecipecrawlerSpider(CrawlSpider):
         orig_body = response.body_as_unicode()
         body = remove_tags_with_content(orig_body, which_ones=('script', 'head'))
         body = remove_tags(remove_comments(body))
-        tokens = tokenize(body.lower())
+        doc = tokenize(body.lower())
 
         # decide if the page is interesting
-        if not is_relevant(tokens):
+        if not classifier.is_relevant(doc):
             stats.inc_value('recipe/filtered_out') # probably not recipe page
             return
 
