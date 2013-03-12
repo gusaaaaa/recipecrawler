@@ -11,8 +11,7 @@ from recipebot.items import RecipebotItem
 
 from w3lib.html import remove_tags_with_content, remove_tags, remove_comments
 
-from ..classifiers.intersection import IntersectionLengthClassifier
-from ..classifiers.cosine import CosineSimilarityClassifier
+from recipebot.similarity import IntersectionLengthSimilarity, CosineSimilarity
 
 import pdb
 
@@ -28,8 +27,8 @@ RECIPE_KEYWORDS = set(['recipe', 'ingredient', 'cook', 'fish', 'beef',
     'pork', 'menu', 'food', 'dish', 'diet', 'fruit', 'egg'
     'vegetarian', 'gluten', 'oister', 'mussel'])
 
-# classifier = IntersectionLengthClassifier(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
-classifier = CosineSimilarityClassifier(indexfile=settings.INDEX_FILE, threshold=0.5)
+# classifier = IntersectionLengthSimilarity(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
+classifier = CosineSimilarity(indexfile=settings.INDEX_FILE, threshold=0.5)
 
 class RecipecrawlerSpider(CrawlSpider):
     name = 'recipecrawler'

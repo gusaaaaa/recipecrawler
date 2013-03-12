@@ -41,7 +41,7 @@ def similarity(doc, index):
         result.append(cosine(v, w))
     return result
 
-class CosineSimilarityClassifier:
+class CosineSimilarity:
     def __init__(self, indexfile="index.json", threshold=0.7):
         content = ""
         with open(indexfile, "r") as f:
