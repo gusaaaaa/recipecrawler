@@ -29,12 +29,12 @@ RECIPE_KEYWORDS = set(['recipe', 'ingredient', 'cook', 'fish', 'beef',
     'vegetarian', 'gluten', 'oister', 'mussel'])
 
 # classifier = IntersectionLengthClassifier(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
-classifier = CosineSimilarityClassifier()
+classifier = CosineSimilarityClassifier(indexfile=settings.INDEX_FILE, threshold=0.5)
 
 class RecipecrawlerSpider(CrawlSpider):
     name = 'recipecrawler'
 
-    f = open("seeds.txt")
+    f = open(settings.SEEDS_FILE)
     start_urls = [url.strip() for url in f.readlines()]
     f.close
 

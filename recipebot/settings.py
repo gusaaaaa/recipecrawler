@@ -29,6 +29,10 @@ EXTENSIONS = {
     'scrapy.contrib.closespider.CloseSpider': 600,
 }
 
-CLOSESPIDER_PAGECOUNT = 3
+CLOSESPIDER_PAGECOUNT = 200
 
-OUTPUT_CRAWLED_PAGES = False
+OUTPUT_CRAWLED_PAGES = True
+
+SEEDS_FILE = "seeds.txt"
+
+INDEX_FILE = "index.json"

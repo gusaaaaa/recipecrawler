@@ -1,9 +1,20 @@
+import sys
 import re
 import math
 from optparse import OptionParser
+import time
 from operator import itemgetter
 import json
 import csv
+
+class Unbuffered:
+   def __init__(self, stream):
+        self.stream = stream
+   def write(self, data):
+       self.stream.write(data)
+       self.stream.flush()
+   def __getattr__(self, attr):
+       return getattr(self.stream, attr)
 
 # Corpus file structure:
 #
@@ -66,10 +77,23 @@ def similarity(v, index):
     return result
 
 if __name__ == '__main__':
+    sys.stdout = Unbuffered(sys.stdout)
+
     parser = OptionParser()
     parser.add_option("-t", "--output-format", dest="format", default="json",
                       help="index format (default: json; options: json, csv)",
                       metavar="FORMAT")
+    parser.add_option("-i", "--input", dest="input_file", default="corpus.txt",
+                      help="input file (default: corpus.txt)",
+                      metavar="INPUT")
+    parser.add_option("-o", "--index-file", dest="index_file", default="index.json",
+                      help="index file name to be generated (default: index.FORMAT)",
+                      metavar="INDEX")
+    parser.add_option("-s", "--seeds-file", dest="seeds_file", default="seeds.txt",
+                      help="seeds file name to be generated (default: seeds.txt)",
+                      metavar="SEEDS")
+    parser.add_option("-v", "--verbose", action="store_true", dest="verbose", default=False,
+                      help="print line being parsed to stdout")
 
     (options, args) = parser.parse_args()
 
@@ -80,9 +104,13 @@ if __name__ == '__main__':
     terms = re.compile(r"\b[a-z-]+\b", flags=re.IGNORECASE)
     seeds = []
     corpus = []
-    with open("corpus.txt", "r") as f:
+    with open(options.input_file, "r") as f:
         odd = True
+        n = 0
         for line in f.readlines():
+            n = n + 1
+            if options.verbose:
+                print "%06d: %s..."%(n, line[0:40])
             if odd:
                 odd = False
                 seeds.append(url.match(line).group(1))
@@ -92,14 +120,27 @@ if __name__ == '__main__':
 
     # build index
 
+    start_time = time.time()
+
+    if options.verbose:
+        print "Building index..."
+
     index = []
+    i = 0
+    if options.verbose:
+        print "Number of documents: %d"%(len(corpus),)
     for doc in corpus:
         items = {}
+        i = i + 1
+        doc_time = time.time()
+        if options.verbose:
+            print "  - Generating index for document #%06d..."%(i,),
         for term in doc:
             items[term] = tfidf(term, doc, corpus)
         index.append(items)
-
-    outputfile = "index.%s"%(options.format,)
+        if options.verbose:
+            print "Done in %.2f seconds (total: %.2f seconds)."%(time.time() - doc_time, time.time() - start_time)
+    outputfile = "%s.%s"%(options.index_file.rsplit(".", 1)[0], options.format)
 
     if options.format == 'json':
         with open(outputfile, "wb") as f:
@@ -112,10 +153,19 @@ if __name__ == '__main__':
                 i = i + 1
                 writer.writerows([i, term, value] for (term, value) in items.items())
 
+    if options.verbose:
+        print "Done. Index generated in %.2f seconds. Index file: %s"%(time.time() - start_time, outputfile)
+
     # output seeds.txt
 
-    with open("seeds.txt", "w") as f:
+    if options.verbose:
+        print "Generating seeds file...",
+
+    with open(options.seeds_file, "w") as f:
         for seed in seeds:
             f.write(seed)
             f.write("\n")
+
+    if options.verbose:
+        print "Done. Seeds file: %s"%(options.seeds_file,)
 
