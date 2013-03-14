@@ -32,6 +32,8 @@ def cosine(v1, v2):
     return dot(v1, v2) / (norm(v1) * norm(v2))
 
 def similarity(doc, index):
+    if len(doc) == 0:
+        return [0.0]
     v = {}
     for term in doc:
         v[term] = tf(term, doc)
@@ -50,5 +52,8 @@ class CosineSimilarity:
         self.threshold = threshold
 
     def is_relevant(self, doc):
+        return self.relevance(doc) > self.threshold
+
+    def relevance(self, doc):
         result = similarity(doc, self.index)
-        return max(result) > self.threshold
+        return max(result)

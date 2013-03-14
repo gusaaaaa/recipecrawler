@@ -15,7 +15,7 @@ NEWSPIDER_MODULE = 'recipebot.spiders'
 #USER_AGENT = 'recipebot (+http://www.yourdomain.com)'
 USER_AGENT = 'recipebot (university assignment)'
 
-SCHEDULER = 'recipebot.randomscheduler.RandomScheduler'
+SCHEDULER = 'recipebot.bfsscheduler.BfsScheduler'
 
 SPIDER_MIDDLEWARES = {
     'scrapy.contrib.spidermiddleware.offsite.OffsiteMiddleware': None,
@@ -29,7 +29,7 @@ EXTENSIONS = {
     'scrapy.contrib.closespider.CloseSpider': 600,
 }
 
-CLOSESPIDER_PAGECOUNT = 200
+CLOSESPIDER_PAGECOUNT = 3
 
 OUTPUT_CRAWLED_PAGES = True
 

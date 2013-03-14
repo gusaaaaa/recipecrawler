@@ -11,6 +11,8 @@ from recipebot.items import RecipebotItem
 
 from w3lib.html import remove_tags_with_content, remove_tags, remove_comments
 
+from scrapy.http import Request
+
 from recipebot.similarity import IntersectionLengthSimilarity, CosineSimilarity
 
 import pdb
@@ -27,20 +29,31 @@ RECIPE_KEYWORDS = set(['recipe', 'ingredient', 'cook', 'fish', 'beef',
     'pork', 'menu', 'food', 'dish', 'diet', 'fruit', 'egg'
     'vegetarian', 'gluten', 'oister', 'mussel'])
 
-# classifier = IntersectionLengthSimilarity(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
-classifier = CosineSimilarity(indexfile=settings.INDEX_FILE, threshold=0.5)
+# sim = IntersectionLengthSimilarity(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
+sim = CosineSimilarity(indexfile=settings.INDEX_FILE, threshold=0.5)
 
 class RecipecrawlerSpider(CrawlSpider):
     name = 'recipecrawler'
 
-    f = open(settings.SEEDS_FILE)
-    start_urls = [url.strip() for url in f.readlines()]
-    f.close
+    def start_requests(self):
+        requests = []
+        f = open(settings.SEEDS_FILE)
+        for url in f.readlines():
+            request = Request(url.strip())
+            request.meta['potential_score'] = 1.0
+            requests.append(request)
+        f.close
+        return requests
 
-    # TODO: extract only relevant links
     rules = (
-            Rule(SgmlLinkExtractor(), callback='parse_item', follow=True),
+            Rule(SgmlLinkExtractor(),
+                 callback='parse_item',
+                 process_request='set_score'),
             )
+
+    def set_score(self, request):
+        request.meta['potential_score'] = sim.relevance(request.meta['link_text'])
+        return request
 
     def parse_item(self, response):
         item = RecipebotItem()
@@ -52,7 +65,7 @@ class RecipecrawlerSpider(CrawlSpider):
         doc = tokenize(body.lower())
 
         # decide if the page is interesting
-        if not classifier.is_relevant(doc):
+        if not sim.is_relevant(doc):
             stats.inc_value('recipe/filtered_out') # probably not recipe page
             return
 
