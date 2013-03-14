@@ -33,6 +33,6 @@ CLOSESPIDER_PAGECOUNT = 3
 
 OUTPUT_CRAWLED_PAGES = True
 
-SEEDS_FILE = "seeds.txt"
+SEEDS_FILE = "input/seeds.txt"
 
-INDEX_FILE = "index.json"
+INDEX_FILE = "input/index.json"

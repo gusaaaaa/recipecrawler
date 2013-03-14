@@ -1,3 +1,6 @@
 items.json
 tmp/
 *.pyc
+tags
+input/
+output/
