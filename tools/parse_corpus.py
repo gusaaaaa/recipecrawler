@@ -100,6 +100,9 @@ if __name__ == '__main__':
     if not (options.format in ['json', 'csv']):
         parser.error("allowed formats: json, csv")
 
+    if options.verbose:
+        print "Parsing corpus..."
+
     url = re.compile(r"^CURRENT URL (.+)$")
     terms = re.compile(r"\b[a-z-]+\b", flags=re.IGNORECASE)
     seeds = []
@@ -117,6 +120,9 @@ if __name__ == '__main__':
             else:
                 odd = True
                 corpus.append(terms.findall(line.lower()))
+
+    if options.verbose:
+        print "Done."
 
     # build index
 
