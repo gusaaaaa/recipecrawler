@@ -41,8 +41,7 @@ copied to ```recipebot/settings.py``` before running the crawler. However,
 is it possible to overwrite them adding custom files in the form
 ```config/custom_1```, ```config/custom_2```, etc.
 
-Custom configuration files are appended to global settings and copied to 
-```recipebot/settings.py```.
+Custom configuration files are appended to global settings and copied to ```recipebot/settings.py```.
 
 To run particular custom configuration (in the example, custom settings
 number 2):
