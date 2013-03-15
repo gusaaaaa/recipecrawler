@@ -31,8 +31,10 @@ EXTENSIONS = {
 
 CLOSESPIDER_PAGECOUNT = 5
 
+# Extended settings
+
+SPIDER_CLASS = 'recipebot.spiders.cosinebfs.CosineBfsSpider'
+RELEVANCY_THRESHOLD = 0.5
 OUTPUT_CRAWLED_PAGES = True
-
 SEEDS_FILE = "input/seeds.txt"
-
 INDEX_FILE = "input/index.json"

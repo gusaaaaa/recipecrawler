@@ -36,4 +36,4 @@ else
 	merge_settings
 fi
 
-scrapy crawl recipecrawler -o output/items.json -t json
+scrapy crawl configurable -o output/items.json -t json

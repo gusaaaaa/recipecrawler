@@ -13,9 +13,9 @@ from w3lib.html import remove_tags_with_content, remove_tags, remove_comments
 
 from scrapy.http import Request
 
-from recipebot.similarity import IntersectionLengthSimilarity, CosineSimilarity
+from recipebot.similarity import CosineSimilarity
 
-import pdb
+from recipebot.spiders.bfs import BfsSpider
 
 from urlparse import urlparse
 from posixpath import basename, dirname
@@ -23,37 +23,12 @@ from posixpath import basename, dirname
 terms = re.compile(r'\b[a-z-]+\b', flags=re.IGNORECASE)
 tokenize = lambda text: terms.findall(text)
 
-RELEVANCY_TSHOLD = 2
+class CosineBfsSpider(BfsSpider):
+    name = 'cosinebfs'
 
-RECIPE_KEYWORDS = set(['recipe', 'ingredient', 'cook', 'fish', 'beef',
-    'pork', 'menu', 'food', 'dish', 'diet', 'fruit', 'egg'
-    'vegetarian', 'gluten', 'oister', 'mussel'])
-
-# sim = IntersectionLengthSimilarity(RECIPE_KEYWORDS, RELEVANCY_TSHOLD)
-sim = CosineSimilarity(indexfile=settings.INDEX_FILE, threshold=0.5)
-
-class RecipecrawlerSpider(CrawlSpider):
-    name = 'recipecrawler'
-
-    def start_requests(self):
-        requests = []
-        f = open(settings.SEEDS_FILE)
-        for url in f.readlines():
-            request = Request(url.strip())
-            request.meta['potential_score'] = 1.0
-            requests.append(request)
-        f.close
-        return requests
-
-    rules = (
-            Rule(SgmlLinkExtractor(),
-                 callback='parse_item',
-                 process_request='set_score'),
-            )
-
-    def set_score(self, request):
-        request.meta['potential_score'] = sim.relevance(request.meta['link_text'])
-        return request
+    def __init__(self, *a, **kwargs):
+        self.sim = CosineSimilarity(indexfile=settings.INDEX_FILE, threshold=settings.RELEVANCY_THRESHOLD)
+        super(CosineBfsSpider, self).__init__(*a, **kwargs)
 
     def parse_item(self, response):
         item = RecipebotItem()
@@ -65,7 +40,7 @@ class RecipecrawlerSpider(CrawlSpider):
         doc = tokenize(body.lower())
 
         # decide if the page is interesting
-        if not sim.is_relevant(doc):
+        if not self.sim.is_relevant(doc):
             stats.inc_value('recipe/filtered_out') # probably not recipe page
             return
 
