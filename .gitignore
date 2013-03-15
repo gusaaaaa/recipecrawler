@@ -4,3 +4,5 @@ tmp/
 tags
 input/
 output/
+recipebot/settings.py
+config/custom_*.py

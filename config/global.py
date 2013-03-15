@@ -29,7 +29,7 @@ EXTENSIONS = {
     'scrapy.contrib.closespider.CloseSpider': 600,
 }
 
-CLOSESPIDER_PAGECOUNT = 3
+CLOSESPIDER_PAGECOUNT = 5
 
 OUTPUT_CRAWLED_PAGES = True
 
