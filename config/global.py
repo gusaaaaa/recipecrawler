@@ -19,6 +19,7 @@ SCHEDULER = 'recipebot.bfsscheduler.BfsScheduler'
 
 SPIDER_MIDDLEWARES = {
     'scrapy.contrib.spidermiddleware.offsite.OffsiteMiddleware': None,
+    'recipebot.spidermiddleware.outputpages.OutputPagesSpiderMiddleware': 1000
 }
 
 DOWNLOADER_MIDDLEWARES = {
@@ -35,6 +36,5 @@ CLOSESPIDER_PAGECOUNT = 5
 
 SPIDER_CLASS = 'recipebot.spiders.cosinebfs.CosineBfsSpider'
 RELEVANCY_THRESHOLD = 0.5
-OUTPUT_CRAWLED_PAGES = True
 SEEDS_FILE = "input/seeds.txt"
 INDEX_FILE = "input/index.json"

@@ -17,9 +17,6 @@ from recipebot.similarity import IntersectionLengthSimilarity
 
 from recipebot.spiders.bfs import BfsSpider
 
-from urlparse import urlparse
-from posixpath import basename, dirname
-
 terms = re.compile(r'\b[a-z-]+\b', flags=re.IGNORECASE)
 tokenize = lambda text: terms.findall(text)
 
@@ -44,12 +41,6 @@ class IntersectionBfsSpider(BfsSpider):
         if not self.sim.is_relevant(doc):
             stats.inc_value('recipe/filtered_out') # probably not recipe page
             return
-
-        if settings.OUTPUT_CRAWLED_PAGES:
-            parse_object = urlparse(response.url)
-            path = parse_object.netloc + "_" + parse_object.path.replace('/', '_') + ".html"
-            with open("tmp/" + path, "wb") as f:
-                f.write(response.body)
 
         item['url'] = response.url
 
