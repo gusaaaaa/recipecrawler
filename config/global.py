@@ -30,7 +30,7 @@ EXTENSIONS = {
     'scrapy.contrib.closespider.CloseSpider': 600,
 }
 
-CLOSESPIDER_PAGECOUNT = 5
+CLOSESPIDER_PAGECOUNT = 200
 
 # Extended settings
 

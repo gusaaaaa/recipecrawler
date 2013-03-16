@@ -29,6 +29,37 @@ process_options() {
 	merge_settings $SETTINGS
 }
 
+pack_output() {
+	files=(tmp/*)
+	if [ ${#files[@]} -gt 0 ]
+	then
+		CONFIGFILE="tmp/config.txt"
+		touch $CONFIGFILE
+		echo "# -----------------------" >> $CONFIGFILE
+		echo "# GLOBAL SETTINGS -------" >> $CONFIGFILE
+		echo "# -----------------------" >> $CONFIGFILE
+		echo "" >> $CONFIGFILE
+		cat $GLOBAL >> $CONFIGFILE
+		if [ -n "$SETTINGS" ]
+		then
+			echo "" >> $CONFIGFILE
+			echo "# -----------------------" >> $CONFIGFILE
+			echo "# CUSTOM SETTINGS -------" >> $CONFIGFILE
+			echo "# -----------------------" >> $CONFIGFILE
+			echo "" >> $CONFIGFILE
+			cat $SETTINGS >> $CONFIGFILE
+		fi
+		cd tmp
+		ZIPFILE="results_$(date +"%Y%m%d%H%M%S").zip"
+		zip -q $ZIPFILE *
+		mv $ZIPFILE ../output/
+		cd ..
+	fi
+}
+
+GLOBAL=""
+SETTINGS=""
+
 if [ -n "$1" ]
 then
 	process_options $1
@@ -36,4 +67,12 @@ else
 	merge_settings
 fi
 
-scrapy crawl configurable -o output/items.json -t json
+# remove temporary files
+rm tmp/*
+
+# execute scrapy
+scrapy crawl configurable -o tmp/items.json -t json
+
+# pack generated temporary files
+
+pack_output

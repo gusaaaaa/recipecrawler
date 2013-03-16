@@ -50,4 +50,12 @@ number 2):
 $ bash script/run.sh 2
 ```
 
+## Output
+
+Scrapped items, crawled pages and other subproducts are packed into a zip file
+and stored in the output folder, in a file named ```results_{timestamp}.zip```.
+
+Output files contain a special file, named ```config.txt```, holding the 
+configuration environment associated to the trial.
+
 [1]: https://github.com/scrapy/scrapy/tree/0.16.4
