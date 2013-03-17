@@ -68,7 +68,7 @@ else
 fi
 
 # remove temporary files
-rm tmp/*
+rm -f tmp/*
 
 # execute scrapy
 scrapy crawl configurable -o tmp/items.json -t json
