@@ -6,7 +6,7 @@ the web.
 ## Requirements
 
 - Python 2.7.3 (won't work with Python 3)
-- [Scrapy 0.16][1]
+- [Scrapy 0.16.4][1]
 
 ## Setup
 
