@@ -1,5 +1,3 @@
-import re
-
 from scrapy.stats import stats
 from scrapy.exceptions import CloseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
@@ -9,16 +7,11 @@ from scrapy.selector import HtmlXPathSelector
 from recipebot import settings
 from recipebot.items import RecipebotItem
 
-from w3lib.html import remove_tags_with_content, remove_tags, remove_comments
-
 from scrapy.http import Request
 
 from recipebot.similarity import CosineSimilarity
 
 from recipebot.spiders.bfs import BfsSpider
-
-terms = re.compile(r'\b[a-z-]+\b', flags=re.IGNORECASE)
-tokenize = lambda text: terms.findall(text)
 
 class CosineBfsSpider(BfsSpider):
     name = 'cosinebfs'
@@ -30,11 +23,7 @@ class CosineBfsSpider(BfsSpider):
     def parse_item(self, response):
         item = RecipebotItem()
 
-        # clean body
-        orig_body = response.body_as_unicode()
-        body = remove_tags_with_content(orig_body, which_ones=('script', 'head'))
-        body = remove_tags(remove_comments(body))
-        doc = tokenize(body.lower())
+        doc = response.meta['terms']
 
         # decide if the page is interesting
         if not self.sim.is_relevant(doc):
