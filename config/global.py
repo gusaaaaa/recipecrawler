@@ -23,7 +23,8 @@ SPIDER_MIDDLEWARES = {
 }
 
 DOWNLOADER_MIDDLEWARES = {
-    'recipebot.middleware.DuplicateDetection': 600,
+    'recipebot.downloadermiddleware.termsextractor.TermsExtractor': 700,
+    'recipebot.downloadermiddleware.nearduplicates.NearDuplicatesDetection': 600,
 }
 
 EXTENSIONS = {
