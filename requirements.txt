@@ -1,3 +1,4 @@
+beautifulsoup4==4.1.3
 -e git://github.com/parkr/near-dup-detection.git#egg=NearDuplicatesDetection
 Scrapy==0.16.4
 Twisted==12.3.0

@@ -8,5 +8,5 @@ from scrapy.item import Item, Field
 class RecipebotItem(Item):
     # define the fields for your item here like:
     # name = Field()
-    # ingredients = Field()
+    ingredients = Field()
     url = Field()

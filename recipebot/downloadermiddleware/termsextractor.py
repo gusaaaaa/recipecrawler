@@ -13,5 +13,6 @@ class TermsExtractor(object):
         body = remove_tags(remove_comments(body))
         terms = tokenize(body.lower())
         request.meta['terms'] = terms
+        request.meta['body'] = body
 
         return response
